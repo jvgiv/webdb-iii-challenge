@@ -95,8 +95,76 @@ server.delete('/api/cohorts/:id', async (req, res) => {
 })
 
 
+// student endpoints
+server.post('/students', async (req, res) => {
+    try {
 
+        const [id] = await db('students').insert(req.body)
+        
+        const student = await db('students')
+        .where({ id })
+        .first()
+        
+        res.status(201).json(student)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
 
+server.get('/students', async (req, res) => {
+    try {
+        const student = await db('students');
+        res.status(200).json(student)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
+server.get('/students/:id', async (req, res) => {
+    try {
+        const student = await db('students')
+            .where({ id: req.params.id })
+            .first();
+        res.status(200).json(student)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
+server.put('/students/:id', async (req, res) => {
+    try {
+        const update = await db('students')
+            .where({ id: req.params.id })
+            .update(req.body);
+        if ( update > 0 ) {
+            const student = await db('students')
+                .where({ id: req.params.id })
+                .first();
+            res.status(200).json(student)
+        } else {
+            res.status(404).json({ message: "Couldn't edit that student."})
+        }
+    } catch (error) {
+        
+    }
+})
+
+server.delete('/students/:id', async (req, res) => {
+    try {
+        const deleter = await db('students')
+            .where({ id: req.params.id })
+            .del();
+        
+        if (deleter > 0) {
+
+            res.status(204).end();
+        } else {
+            res.status(404).json({ message: "Couldn't find that student."})
+        }
+    } catch (error) {
+
+    }
+})
 
 
 

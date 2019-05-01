@@ -51,7 +51,16 @@ server.get('/api/cohorts/:id', async (req, res) => {
     }
 })
 
-// server.get('/api/cohorts/:id/students')
+server.get('/api/cohorts/:id/students', async (req, res) => {
+    try {
+        const cohorts = await db('students')
+            .where({ cohorts_id: req.params.id })
+            .first()
+        res.status(200).json(cohorts)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
 
 server.put('/api/cohorts/:id', async (req, res) => {
     try {
@@ -71,7 +80,19 @@ server.put('/api/cohorts/:id', async (req, res) => {
     }
 })
 
-// server.delete('/api/cohorts/:id')
+server.delete('/api/cohorts/:id', async (req, res) => {
+    try {
+        const deleter = await db('cohorts')
+            .where({ id: req.params.id })
+            .del();
+
+        if (deleter > 0) {
+            res.status(204).end();
+        } else {
+            res.status(404).json({ message: "Cohort not found."})
+        }
+    } catch (error) {}
+})
 
 
 
